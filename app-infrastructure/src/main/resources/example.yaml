@@ -1,0 +1,52 @@
+server:
+  port: 9001
+  
+app:
+  schedule:
+    quartz:
+      enable: true
+      job-store-type: jdbc
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://127.0.0.1:3306/quartz?serverTimezone=GMT
+      username: root
+      password: password
+  mqtt:
+    enable: true
+    uri: tcp://127.0.0.1:1883
+    username: guest
+    password: guest
+    client-id: server-client
+  message:
+    rabbit:
+      enable: true
+      host: 127.0.0.1
+      port: 5672
+      username: guest
+      password: guest
+      virtual-host: "/"
+  data:
+    cache:
+      redis:
+        enable: true
+        host-name: 127.0.0.1
+        port: 6379
+        database: 0
+        username:
+        password:
+    database: # only support MySQL,SQLite,Postgresql
+      enable: true
+      count: 1
+      datasource:
+        - jdbc-url: jdbc:mysql://127.0.0.1:3306/example?serverTimezone=GMT
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          username: root
+          password: password
+          data-source-bean-name: exampleDataSource
+          jdbc-template-bean-name: exampleJdbcTemplate
+          sql-session-template-bean-name: exampleSqlSessionTemplate
+          transaction-template-bean-name: exampleTransactionTemplate
+          transaction-manager-bean-name: exampleTransactionManager
+          base-packages: cc.cybereflex.example.repository
+          mapper-location-count: 1
+          mapper-locations:
+            - classpath:mapper/**/*.xml

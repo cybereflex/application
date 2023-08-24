@@ -1,0 +1,30 @@
+server:
+  port: 9001
+
+app:
+  data:
+    cache:
+      redis:
+        enable: true
+        hostname: 127.0.0.1
+        port: 6379
+        database: 0
+        username:
+        password:
+    database:
+      enable: true
+      count: 1
+      datasource:
+        - jdbc-url: jdbc:mysql://127.0.0.1:3306/resources?serverTimezone=GMT
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          username: root
+          password: password
+          data-source-bean-name: resourcesDataSource
+          jdbc-template-bean-name: resourcesJdbcTemplate
+          sql-session-template-bean-name: resourcesSqlSessionTemplate
+          transaction-template-bean-name: resourcesTransactionTemplate
+          transaction-manager-bean-name: resourcesTransactionManager
+          base-packages: cc.cybereflex.resources.repository
+          mapper-location-count: 1
+          mapper-locations:
+            - classpath:mapper/**/*.xml

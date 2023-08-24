@@ -1,0 +1,4 @@
+server:
+  port: 9000
+
+whitelist: "/api/resources/auth/**,/api/example/**"

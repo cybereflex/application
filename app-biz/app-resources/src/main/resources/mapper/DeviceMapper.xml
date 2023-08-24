@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.cybereflex.resources.repository.DeviceRepository">
+
+    <resultMap id="BaseResultMap" type="cc.cybereflex.resources.model.data.Device">
+        <id property="id" column="id" />
+        <result property="uuid" column="uuid" />
+        <result property="name" column="name" />
+        <result property="ip" column="ip" />
+        <result property="port" column="port" />
+        <result property="username" column="username" />
+        <result property="password" column="password" />
+        <result property="vendor" column="vendor" />
+        <result property="type" column="type" />
+        <result property="enable" column="enable" />
+        <result property="version" column="version" />
+        <result property="modifiedTime" column="modified_time" />
+        <result property="createTime" column="create_time" />
+        <result property="extraInfo" column="extra_info" typeHandler="cc.cybereflex.infrastructure.type_handler.JsonTypeHandler"/>
+    </resultMap>
+
+    <sql id="BaseSelect">
+        SELECT
+       `id`,
+       `uuid`,
+       `ip`,
+       `port`,
+       `username`,
+       `password`,
+       `vendor`,
+       `name`,
+       `type`,
+       `enable`,
+       `extra_info`,
+       `version`,
+       `modified_time`,
+       `create_time`
+        FROM resources.resources_device
+    </sql>
+
+    <insert id="insert">
+        INSERT INTO resources.resources_device
+        (`uuid`,
+         `name`,
+         `ip`,
+         `port`,
+         `username`,
+         `password`,
+         `vendor`,
+         `type`,
+         `enable`,
+         `extra_info`,
+         `version`,
+         `modified_time`,
+         `create_time`)
+        VALUES (#{uuid},
+                #{name},
+                #{ip},
+                #{port},
+                #{username},
+                #{password},
+                #{vendor},
+                #{type},
+                #{enable},
+                #{extraInfo},
+                1,
+                NOW(),
+                NOW())
+    </insert>
+
+    <select id="queryAllAvailable" resultMap="BaseResultMap">
+        <include refid="BaseSelect" />
+        WHERE `enable` = true
+    </select>
+    <select id="queryByUUID" resultMap="BaseResultMap">
+        <include refid="BaseSelect"/>
+        WHERE `uuid` = #{uuid}
+        AND `enable` = true
+    </select>
+    <select id="queryByIpAndUsername" resultMap="BaseResultMap">
+        <include refid="BaseSelect"/>
+        WHERE `ip` = #{ip}
+        AND `username` = #{username}
+        AND `enable` = true;
+    </select>
+
+</mapper>

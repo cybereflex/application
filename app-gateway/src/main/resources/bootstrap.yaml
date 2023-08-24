@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: app-gateway
+  cloud:
+    nacos:
+      config:
+        server-addr: localhost:8848
+        file-extension: yaml
+        group: DEFAULT_GROUP
+        namespace:
+        username:
+        password:
+
+      discovery:
+        server-addr: localhost:8848
+
+
+app:
+  gateway:
+    route:
+      dataId: app-gateway-route.json
+      group: DEFAULT_GROUP
+      timeoutMills: 5000
+

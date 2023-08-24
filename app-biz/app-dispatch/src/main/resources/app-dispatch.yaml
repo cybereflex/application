@@ -1,0 +1,26 @@
+server:
+  port: 9002
+app:
+  message:
+    rabbit:
+      enable: true
+      hostname: 127.0.0.1
+      port: 5672
+      username: guest
+      password: guest
+      virtual-host: "/"
+    mqtt:
+      enable: true
+      uri: tcp://127.0.0.1:1883
+      username: guest
+      password: guest
+      client-id: server-client
+  data:
+    cache:
+      redis:
+        enable: true
+        hostname: 127.0.0.1
+        port: 6379
+        database: 0
+        username:
+        password:

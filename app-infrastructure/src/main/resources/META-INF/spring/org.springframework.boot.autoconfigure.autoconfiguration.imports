@@ -1,0 +1,6 @@
+cc.cybereflex.infrastructure.SpringContextHolder
+cc.cybereflex.infrastructure.autoconfigure.cache.RedisAutoConfiguration
+cc.cybereflex.infrastructure.autoconfigure.database.DatabaseAutoConfiguration
+cc.cybereflex.infrastructure.autoconfigure.message.RabbitAutoConfiguration
+cc.cybereflex.infrastructure.autoconfigure.message.MqttAutoConfiguration
+cc.cybereflex.infrastructure.autoconfigure.schedule.QuartzAutoConfiguration

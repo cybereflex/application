@@ -1,0 +1,12 @@
+server:
+  port: 9004
+
+app:
+  schedule:
+    quartz:
+      enable: true
+      job-store-type: jdbc
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://127.0.0.1:3306/quartz?serverTimezone=GMT
+      username: root
+      password: password

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>cc.cybereflex</groupId>
+    <artifactId>application</artifactId>
+    <version>1.0</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>app-common</module>
+        <module>app-infrastructure</module>
+        <module>app-biz</module>
+        <module>app-gateway</module>
+        <module>app-client</module>
+        <module>app-biz/app-resources</module>
+        <module>app-biz/app-dispatch</module>
+        <module>app-biz/app-process</module>
+        <module>app-biz/app-media</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <app.version>1.0</app.version>
+        <spring-boot.version>3.1.2</spring-boot.version>
+        <spring-cloud.version>2022.0.3</spring-cloud.version>
+        <spring-cloud-alibaba.version>2022.0.0.0-RC2</spring-cloud-alibaba.version>
+        <camunda.version>7.20.0-alpha4</camunda.version>
+        <quartz.version>3.1.2</quartz.version>
+        <mybatis.version>3.0.2</mybatis.version>
+        <page-helper.version>1.4.7</page-helper.version>
+        <jdbc-mysql.version>8.1.0</jdbc-mysql.version>
+        <jdbc-sqlite.version>3.42.0.0</jdbc-sqlite.version>
+        <lombok.version>1.18.28</lombok.version>
+        <jjwt.version>0.9.1</jjwt.version>
+        <guava.version>32.1.1-jre</guava.version>
+        <apache-common-lang3.version>3.12.0</apache-common-lang3.version>
+        <apache-common-pool2.version>2.11.1</apache-common-pool2.version>
+        <apache-common-collection4.version>4.4</apache-common-collection4.version>
+        <spring-boot-mvn-plugin.version>3.1.2</spring-boot-mvn-plugin.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!--app-module-->
+            <dependency>
+                <groupId>cc.cybereflex</groupId>
+                <artifactId>app-common</artifactId>
+                <version>${app.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cc.cybereflex</groupId>
+                <artifactId>app-client</artifactId>
+                <version>${app.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cc.cybereflex</groupId>
+                <artifactId>app-infrastructure</artifactId>
+                <version>${app.version}</version>
+            </dependency>
+
+            <!--spring-boot-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!--spring-cloud-->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!--spring-cloud-alibaba-->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring-cloud-alibaba.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!--camunda-->
+            <dependency>
+                <groupId>org.camunda.bpm.springboot</groupId>
+                <artifactId>camunda-bpm-spring-boot-starter</artifactId>
+                <version>${camunda.version}</version>
+            </dependency>
+
+            <!--quartz-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-quartz</artifactId>
+                <version>${quartz.version}</version>
+            </dependency>
+
+            <!--page-helper-->
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper-spring-boot-starter</artifactId>
+                <version>${page-helper.version}</version>
+            </dependency>
+
+            <!--mybatis-->
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${mybatis.version}</version>
+            </dependency>
+
+
+            <!--utils-->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${apache-common-lang3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-pool2</artifactId>
+                <version>${apache-common-pool2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>${apache-common-collection4.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot-mvn-plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+
+
+
+</project>

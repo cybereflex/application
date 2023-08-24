@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.cybereflex.process.repository.ProcessDefinitionRepository">
+
+    <resultMap id="BaseResultMap" type="cc.cybereflex.process.model.data.ProcessDefinition">
+        <id property="id" column="id" />
+        <result property="pid" column="pid" />
+        <result property="name" column="name" />
+        <result property="definition" column="definition"/>
+        <result property="modifiedTime" column="modified_time" />
+        <result property="createTime" column="create_time" />
+        <result property="extraData" column="extra_data"/>
+    </resultMap>
+
+    <sql id="BaseSelect">
+        SELECT
+       `id`,
+       `name`,
+       `pid`,
+       `definition`,
+       `extra_data`,
+       `modified_time`,
+       `create_time`
+        FROM process.process_definition
+    </sql>
+
+
+
+    <select id="queryAll" resultMap="BaseResultMap">
+        <include refid="BaseSelect"/>
+    </select>
+</mapper>
