@@ -1,18 +1,15 @@
 package cc.cybereflex.media.server.codec.model;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
-import io.netty.handler.codec.http.HttpStatusClass;
-import io.netty.util.AsciiString;
-import io.netty.util.CharsetUtil;
-import io.netty.util.internal.ObjectUtil;
+import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.Assert;
 
-import static io.netty.handler.codec.http.HttpConstants.SP;
-import static io.netty.util.ByteProcessor.FIND_ASCII_SPACE;
-import static io.netty.util.internal.ObjectUtil.checkPositiveOrZero;
+import java.util.Objects;
+
 import static java.lang.Integer.parseInt;
 
-public class SipResponseStatus implements Comparable<SipResponseStatus> {
+@Data
+public class SipResponseStatus {
 
     /**
      * 1xx.
@@ -49,15 +46,13 @@ public class SipResponseStatus implements Comparable<SipResponseStatus> {
     public static final SipResponseStatus NOT_FOUND = newStatus(404, "Not Found");
     public static final SipResponseStatus METHOD_NOT_ALLOWED = newStatus(405, "Method Not Allowed");
     public static final SipResponseStatus NOT_ACCEPTABLE = newStatus(406, "Not Acceptable");
-    public static final SipResponseStatus PROXY_AUTHENTICATION_REQUIRED =
-            newStatus(407, "Proxy Authentication Required");
+    public static final SipResponseStatus PROXY_AUTHENTICATION_REQUIRED = newStatus(407, "Proxy Authentication Required");
     public static final SipResponseStatus REQUEST_TIMEOUT = newStatus(408, "Request Timeout");
     public static final SipResponseStatus CONFLICT = newStatus(409, "Conflict");
     public static final SipResponseStatus GONE = newStatus(410, "Gone");
     public static final SipResponseStatus LENGTH_REQUIRED = newStatus(411, "Length Required");
     public static final SipResponseStatus PRECONDITION_FAILED = newStatus(412, "Precondition Failed");
-    public static final SipResponseStatus REQUEST_ENTITY_TOO_LARGE =
-            newStatus(413, "Request Entity Too Large");
+    public static final SipResponseStatus REQUEST_ENTITY_TOO_LARGE = newStatus(413, "Request Entity Too Large");
     public static final SipResponseStatus REQUEST_URI_TOO_LONG = newStatus(414, "Request-URI Too Long");
     public static final SipResponseStatus UNSUPPORTED_MEDIA_TYPE = newStatus(415, "Unsupported Media Type");
     public static final SipResponseStatus UNSUPPORTED_URI_SCHEME = newStatus(416, "Unsupported URIScheme");
@@ -88,8 +83,7 @@ public class SipResponseStatus implements Comparable<SipResponseStatus> {
     public static final SipResponseStatus BAD_GATEWAY = newStatus(502, "Bad Gateway");
     public static final SipResponseStatus SERVICE_UNAVAILABLE = newStatus(503, "Service Unavailable");
     public static final SipResponseStatus SERVER_TIMEOUT = newStatus(504, "Server Timeout");
-    public static final SipResponseStatus SIP_VERSION_NOT_SUPPORTED =
-            newStatus(505, "Sip Version Not Supported");
+    public static final SipResponseStatus SIP_VERSION_NOT_SUPPORTED = newStatus(505, "Sip Version Not Supported");
     public static final SipResponseStatus MESSAGE_TOO_LARGE = newStatus(513, "Message Too Large");
     public static final SipResponseStatus PRECONDITION_FAILURE = newStatus(580, "PreconditionFailure");
 
@@ -109,52 +103,14 @@ public class SipResponseStatus implements Comparable<SipResponseStatus> {
     public static final SipResponseStatus ERROR_SENDING_MESSAGE_TO_DESTINATION_SERVER = newStatus(703, "ErrorSendingMessageToDestinationServer");
 
     private static SipResponseStatus newStatus(int statusCode, String reasonPhrase) {
-        return new SipResponseStatus(statusCode, reasonPhrase, true);
+        return new SipResponseStatus(statusCode, reasonPhrase);
     }
+
+    private int code;
+    private String reasonPhrase;
 
     public static SipResponseStatus valueOf(int code, String reasonPhrase) {
-        SipResponseStatus responseStatus = valueOf0(code);
-        return responseStatus != null && responseStatus.reasonPhrase().contentEquals(reasonPhrase) ? responseStatus :
-                new SipResponseStatus(code, reasonPhrase);
-    }
-
-    public static SipResponseStatus parseLine(CharSequence line) {
-        return (line != null) ? parseLine((AsciiString) line) : parseLine(line.toString());
-    }
-
-    public static SipResponseStatus parseLine(String line) {
-        try {
-            int space = line.indexOf(' ');
-            return space == -1 ? valueOf(parseInt(line)) :
-                    valueOf(parseInt(line.substring(0, space)), line.substring(space + 1));
-        } catch (Exception e) {
-            throw new IllegalArgumentException("malformed status line: " + line, e);
-        }
-    }
-
-    public static SipResponseStatus parseLine(AsciiString line) {
-        try {
-            int space = line.forEachByte(FIND_ASCII_SPACE);
-            return space == -1 ? valueOf(line.parseInt()) : valueOf(line.parseInt(0, space), line.toString(space + 1));
-        } catch (Exception e) {
-            throw new IllegalArgumentException("malformed status line: " + line, e);
-        }
-    }
-
-    private final int code;
-    private final AsciiString codeAsText;
-    private HttpStatusClass codeClass;
-
-    private final String reasonPhrase;
-    private final byte[] bytes;
-
-    public static SipResponseStatus valueOf(int code) {
-        SipResponseStatus status = valueOf0(code);
-        return status != null ? status : new SipResponseStatus(code);
-    }
-
-    private static SipResponseStatus valueOf0(int code) {
-        return switch (code) {
+        var status = switch (code) {
             case 100 -> TRYING;
             case 180 -> RINGING;
             case 181 -> CALL_BEING_FORWARD;
@@ -217,97 +173,29 @@ public class SipResponseStatus implements Comparable<SipResponseStatus> {
             case 701 -> NO_RESPONSE_FROM_DESTINATION_SERVER;
             case 702 -> UNABLE_TO_RESOLVE_DESTINATION_SERVER;
             case 703 -> ERROR_SENDING_MESSAGE_TO_DESTINATION_SERVER;
-            default -> null;
+            default -> newStatus(code, reasonPhrase);
         };
+
+        return (Objects.isNull(status)) ? new SipResponseStatus(code) : status;
     }
 
     private SipResponseStatus(int code) {
-        this(code, SipResponseStatus.valueOf(code).reasonPhrase() + " (" + code + ')', false);
+        this(code, null);
     }
 
-    public SipResponseStatus(int code, String reasonPhrase) {
-        this(code, reasonPhrase, false);
-    }
+    private SipResponseStatus(int code, String reasonPhrase) {
+        Assert.isTrue(code > 0, "code must bigger than 0");
 
-    private SipResponseStatus(int code, String reasonPhrase, boolean bytes) {
-        checkPositiveOrZero(code, "code");
-        ObjectUtil.checkNotNull(reasonPhrase, "reasonPhrase");
-
-        for (int i = 0; i < reasonPhrase.length(); i++) {
-            char c = reasonPhrase.charAt(i);
-            // Check prohibited characters.
-            if (c == '\n' || c == '\r') {
-                throw new IllegalArgumentException(
-                        "reasonPhrase contains one of the following prohibited characters: " +
-                                "\\r\\n: " + reasonPhrase);
+        if (StringUtils.isNotBlank(reasonPhrase)) {
+            for (int i = 0; i < reasonPhrase.length(); i++) {
+                char c = reasonPhrase.charAt(i);
+                if (c == '\n' || c == '\r') {
+                    throw new IllegalArgumentException("reasonPhrase contains one of the following prohibited characters: \\r\\n: " + reasonPhrase);
+                }
             }
         }
 
         this.code = code;
-        String codeString = Integer.toString(code);
-        codeAsText = new AsciiString(codeString);
         this.reasonPhrase = reasonPhrase;
-        if (bytes) {
-            this.bytes = (codeString + ' ' + reasonPhrase).getBytes(CharsetUtil.US_ASCII);
-        } else {
-            this.bytes = null;
-        }
-    }
-
-    public int code() {
-        return code;
-    }
-
-    public AsciiString codeAsText() {
-        return codeAsText;
-    }
-
-    public String reasonPhrase() {
-        return reasonPhrase;
-    }
-
-    public HttpStatusClass codeClass() {
-        HttpStatusClass type = this.codeClass;
-        if (type == null) {
-            this.codeClass = type = HttpStatusClass.valueOf(code);
-        }
-        return type;
-    }
-
-    @Override
-    public int hashCode() {
-        return code();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof SipResponseStatus)) {
-            return false;
-        }
-
-        return code() == ((SipResponseStatus) o).code();
-    }
-
-
-    @Override
-    public int compareTo(SipResponseStatus o) {
-        return code() - o.code();
-    }
-
-    @Override
-    public String toString() {
-        return String.valueOf(codeAsText) +
-                ' ' +
-                reasonPhrase;
-    }
-
-    void encode(ByteBuf buf) {
-        if (bytes == null) {
-            ByteBufUtil.copy(codeAsText, buf);
-            buf.writeByte(SP);
-            buf.writeCharSequence(reasonPhrase, CharsetUtil.US_ASCII);
-        } else {
-            buf.writeBytes(bytes);
-        }
     }
 }

@@ -1,4 +1,4 @@
-package cc.cybereflex.media.server.codec.model;
+package cc.cybereflex.media.server.common;
 
 import io.netty.util.CharsetUtil;
 

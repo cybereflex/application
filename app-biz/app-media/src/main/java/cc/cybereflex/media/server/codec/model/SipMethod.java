@@ -1,13 +1,15 @@
 package cc.cybereflex.media.server.codec.model;
 
 import io.netty.util.AsciiString;
+import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
-import static io.netty.util.internal.ObjectUtil.checkNotNull;
-
-public class SipMethod implements Comparable<SipMethod> {
+@Data
+public class SipMethod {
     /**
      * OPTIONS
      */
@@ -58,28 +60,8 @@ public class SipMethod implements Comparable<SipMethod> {
      */
     public static final SipMethod INFO = new SipMethod("INFO");
 
-    /**
-     * UPDATE
-     */
-    public static final SipMethod UPDATE = new SipMethod("UPDATE");
 
-    /**
-     * PUBLISH
-     */
-    public static final SipMethod PUBLISH = new SipMethod("PUBLISH");
-
-    /**
-     * PRACK
-     */
-    public static final SipMethod PRACK = new SipMethod("PRACK");
-
-    /**
-     * REFER
-     */
-    public static final SipMethod REFER = new SipMethod("REFER");
-
-
-    private static final Map<String, SipMethod> METHOD_MAP = new HashMap<>();
+    private static final Map<String, SipMethod> METHOD_MAP = new ConcurrentHashMap<>();
 
     static {
         METHOD_MAP.put(OPTIONS.toString(), OPTIONS);
@@ -92,23 +74,18 @@ public class SipMethod implements Comparable<SipMethod> {
         METHOD_MAP.put(NOTIFY.toString(), NOTIFY);
         METHOD_MAP.put(MESSAGE.toString(), MESSAGE);
         METHOD_MAP.put(INFO.toString(), INFO);
-        METHOD_MAP.put(UPDATE.toString(), UPDATE);
-        METHOD_MAP.put(PUBLISH.toString(), PUBLISH);
-        METHOD_MAP.put(PRACK.toString(), PRACK);
-        METHOD_MAP.put(REFER.toString(), REFER);
     }
 
     public static SipMethod valueOf(String name) {
         SipMethod result = METHOD_MAP.get(name);
-        return result != null ? result : new SipMethod(name);
+        return Objects.nonNull(result) ? result : new SipMethod(name);
     }
 
     private final AsciiString name;
 
     public SipMethod(String name) {
-        name = checkNotNull(name, "name").trim();
-        if (name.isEmpty()) {
-            throw new IllegalArgumentException("empty name");
+        if (StringUtils.isBlank(name)) {
+            throw new IllegalArgumentException("blank name");
         }
 
         for (int i = 0; i < name.length(); i++) {
@@ -119,40 +96,5 @@ public class SipMethod implements Comparable<SipMethod> {
         }
 
         this.name = AsciiString.cached(name);
-    }
-
-    public String name() {
-        return name.toString();
-    }
-
-
-    @Override
-    public int hashCode() {
-        return name().hashCode();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof SipMethod that)) {
-            return false;
-        }
-
-        return name().equals(that.name());
-    }
-
-    @Override
-    public String toString() {
-        return name.toString();
-    }
-
-    @Override
-    public int compareTo(SipMethod o) {
-        if (o == this) {
-            return 0;
-        }
-        return name().compareTo(o.name());
     }
 }

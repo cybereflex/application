@@ -13,21 +13,9 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class SipMessage implements DecoderResultProvider {
+public abstract class SipMessage{
 
     private SipVersion sipVersion;
     private SipHeaders sipHeaders;
-    private ByteBuf content;
-    private DecoderResult decoderResult = DecoderResult.SUCCESS;
-
-
-    @Override
-    public DecoderResult decoderResult() {
-        return decoderResult;
-    }
-
-    @Override
-    public void setDecoderResult(DecoderResult decoderResult) {
-        this.decoderResult = ObjectUtil.checkNotNull(decoderResult, "decoderResult");
-    }
+    private CharSequence content;
 }
