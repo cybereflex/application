@@ -14,10 +14,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @RequiredArgsConstructor
-public class MediaServer {
-    private static final Logger logger = LoggerFactory.getLogger(MediaServer.class);
+public class SipServer {
+    private static final Logger logger = LoggerFactory.getLogger(SipServer.class);
 
-    private final MediaServerConfig config;
+    private final SipServerConfig config;
 
     public void startTcp() {
         NioEventLoopGroup bossGroup = new NioEventLoopGroup();

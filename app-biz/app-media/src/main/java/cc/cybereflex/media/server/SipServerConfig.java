@@ -3,7 +3,7 @@ package cc.cybereflex.media.server;
 import lombok.Data;
 
 @Data
-public class MediaServerConfig {
+public class SipServerConfig {
 
     /**
      * udp 端口
